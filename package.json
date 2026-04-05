@@ -1,5 +1,14 @@
 {
+  "name": "solar_panel_berechner",
+  "version": "1.0.0",
+  "description": "Solar panel calculator API with SQLite persistence and cookie-based user tracking.",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
   "dependencies": {
-    "node": "^25.8.2"
+    "better-sqlite3": "^11.10.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2"
   }
 }
