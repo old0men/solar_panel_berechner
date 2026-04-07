@@ -108,7 +108,8 @@ class SolarPanelCalculator {
         const airMassFactor = this.calculateAirMassEffect(sunPos.zenith);
         const beamIrradiance = this.solarConstant * airMassFactor;
         const incidentPower = beamIrradiance * panelArea * cosTheta;
-        const electricalPower = incidentPower * panelEfficiency;
+        const electricalPower = Math.round(incidentPower * panelEfficiency * 100) / 100;
+
 
         return {
             power: electricalPower,
@@ -177,5 +178,65 @@ class SolarPanelCalculator {
         };
     }
 }
+
+// Example usage and demonstration
+function demonstrateCalculator() {
+    const calculator = new SolarPanelCalculator(0.85, 1.6);
+
+    // Example: Panel at 35° tilt, facing south, at 40° latitude
+    const params = {
+        latitude: 40.7128,      // New York latitude
+        longitude: -74.0060,    // New York longitude
+        dayOfYear: 172,          // June 21 (summer solstice)
+        hour: 12,                // Solar noon
+        panelTilt: 35,           // 35° tilt from horizontal
+        panelAzimuth: 0,         // Facing south
+        panelEfficiency: 0.85,
+        panelArea: 1.6
+    };
+
+    console.log("=== Solar Panel Energy Calculator ===\n");
+
+    // Single moment calculation
+    console.log("Single moment calculation (summer solstice, solar noon):");
+    const result = calculator.calculateEnergy(params);
+    console.log(`  Power output: ${result.power.toFixed(1)} W`);
+    console.log(`  Energy (this hour): ${result.energy.toFixed(1)} Wh`);
+    console.log(`  Sun elevation: ${result.details.sunElevation.toFixed(1)}°`);
+    console.log(`  Incidence angle: ${result.details.incidenceAngle.toFixed(1)}°`);
+    console.log(`  Air mass factor: ${result.details.airMassFactor.toFixed(2)}\n`);
+
+    // Daily calculation
+    console.log("Daily energy production (summer solstice):");
+    const dailyEnergy = calculator.calculateDailyEnergy(params);
+    console.log(`  Total: ${dailyEnergy.toFixed(1)} Wh (${(dailyEnergy / 1000).toFixed(2)} kWh)\n`);
+
+    // Compare different panel tilts
+    console.log("Daily energy comparison (summer vs winter):");
+    const winterParams = { ...params, dayOfYear: 355 }; // December 21
+
+    const tilts = [0, 15, 30, 35, 45, 60];
+    console.log("Panel tilt | Summer (Jun 21) | Winter (Dec 21)");
+    console.log("----------------------------------------------");
+
+    tilts.forEach(tilt => {
+        const summerEnergy = calculator.calculateDailyEnergy({ ...params, panelTilt: tilt });
+        const winterEnergy = calculator.calculateDailyEnergy({ ...winterParams, panelTilt: tilt });
+        console.log(`  ${tilt}°      | ${summerEnergy.toFixed(0)} Wh        | ${winterEnergy.toFixed(0)} Wh`);
+    });
+
+    console.log("\n");
+
+    // Annual calculation
+    console.log("Annual energy production (fixed tilt, 35°):");
+    const annual = calculator.calculateAnnualEnergy(params);
+    console.log(`  Total annual: ${annual.annual.toFixed(0)} kWh`);
+    console.log("\n  Monthly breakdown:");
+    annual.monthly.forEach(month => {
+        console.log(`    Month ${month.month}: ${month.energy.toFixed(0)} kWh (${month.days} days)`);
+    });
+}
+
+demonstrateCalculator()
 
 module.exports = SolarPanelCalculator;

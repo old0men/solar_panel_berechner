@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>Solar Calculator</title>
+</head>
+<body>
+<h1>Solar Panel Calculator</h1>
+
+<form id="calcForm">
+        <h2>Calculation Type</h2>
+        <select id="calculationType">
+                <option value="moment">Moment</option>
+                <option value="daily">Daily</option>
+        </select><br><br>
+
+        <h2>Panel Type</h2>
+        <select id="type">
+                <option value="monocrystalline">Monocrystalline</option>
+                <option value="polycrystalline">Polycrystalline</option>
+                <option value="thinFilm">Thin Film</option>
+        </select><br><br>
+
+        <input id="latitude" placeholder="Latitude" required><br><br>
+        <!-- <input id="longitude" placeholder="longitude" required><br><br> -->
+        <input id="panelTilt" placeholder="Panel Tilt" required><br><br>
+        <input id="panelAzimuth" placeholder="Panel Azimuth" required><br><br>
+        <input id="panelArea" placeholder="Panel Area"><br><br>
+        <input id="dayOfYear" placeholder="Day of Year"><br><br>
+        <input id="hour" placeholder="Hour"><br><br>
+
+        <button type="submit">Calculate</button>
+</form>
+
+<h2>Result</h2>
+<pre id="result"></pre>
+
+<h2>Saved</h2>
+<button onclick="loadCalculations()">Refresh</button>
+<table border="1">
+        <thead>
+        <tr>
+                <th>ID</th>
+                <th>Power</th>
+                <th>Panel Type</th>
+                <th>Calculation Type</th>
+        </tr>
+        </thead>
+        <tbody id="list"></tbody>
+</table>
+
+<script>
+    const API = "/api"; // IMPORTANT: same origin
+
+    document.getElementById("calcForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = {
+            calculationType: document.getElementById("calculationType").value,
+            type: document.getElementById("type").value,
+            latitude: document.getElementById("latitude").value,
+            longitude: 0,
+            panelTilt: document.getElementById("panelTilt").value,
+            panelAzimuth: document.getElementById("panelAzimuth").value,
+            panelArea: document.getElementById("panelArea").value,
+            dayOfYear: document.getElementById("dayOfYear").value,
+            hour: document.getElementById("hour").value
+        };
+
+        const res = await fetch(`${API}/calculations`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "same-origin", // works automatically now
+            body: JSON.stringify(data)
+        });
+
+        const json = await res.json();
+        document.getElementById("result").textContent =
+            JSON.stringify(json, null, 2);
+
+        loadCalculations();
+    });
+
+    async function loadCalculations() {
+        const res = await fetch(`${API}/calculations`);
+        const data = await res.json();
+
+        const list = document.getElementById("list");
+        list.innerHTML = "";
+
+        data.calculations.forEach(c => {
+            const tr = document.createElement("tr");
+
+            const power = c.result?.power ?? c.result?.energy ?? c.result?.energyKWh ?? "-";
+            const panelType = c.result?.panelType || "-";
+
+
+
+            tr.innerHTML = `
+                            <td>${c.id}</td>
+                            <td style="text-align: right">${Math.round(power*100)/100} KW</td>
+                            <td>${panelType}</td>
+                            <td>${c.calculationType}</td>
+                          `;
+
+            list.appendChild(tr);
+        });
+    }
+
+    loadCalculations();
+</script>
+</body>
+</html>

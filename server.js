@@ -14,6 +14,7 @@ const {
 } = require("./db");
 
 const app = express();
+const path = require("path");
 const calculator = new SolarPanelCalculator();
 const PORT = Number(process.env.PORT || 3000);
 const USER_COOKIE_NAME = "solar_user_id";
@@ -22,6 +23,7 @@ const ONE_YEAR_MS = 1000 * 60 * 60 * 24 * 365;
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(express.static(path.join(__dirname, "public")));
 app.use((req, res, next) => {
     let cookieId = req.cookies[USER_COOKIE_NAME];
 
