@@ -20,12 +20,44 @@
                 <option value="thinFilm">Thin Film</option>
         </select><br><br>
 
-        <input id="latitude" placeholder="Latitude" required><br><br>
+        <div style="border:1px solid #ccc; padding:15px; width:300px; border-radius:8px; justify-content: center">
+                <div style="text-align: center">
+                        <label>Weather Condition: </label>
+                        <span id="weatherCondition">0%</span><br><br>
+                </div>
+
+
+                <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:12px;">Clear Sky</span>
+
+                        <input
+                                type="range"
+                                id="weather"
+                                min="0"
+                                max="1"
+                                step="0.01"
+                                value="0"
+                                style="flex:1;"
+                        >
+
+                        <span style="font-size:12px;">Completely Cloudy</span>
+                </div>
+        </div>
+        <br>
+
+        <!-- <input id="latitude" placeholder="Latitude" required><br><br>   -->
         <!-- <input id="longitude" placeholder="longitude" required><br><br> -->
+        <label>panel tilt</label><br>
         <input id="panelTilt" placeholder="Panel Tilt" required><br><br>
-        <input id="panelAzimuth" placeholder="Panel Azimuth" required><br><br>
+        <label>panel cardinality</label><br>
+        <input id="panelAzimuth" placeholder="Panel Cardinality" required><br><br>
+        <label>panel area</label><br>
         <input id="panelArea" placeholder="Panel Area"><br><br>
-        <input id="dayOfYear" placeholder="Day of Year"><br><br>
+
+        <label>Start Date:</label><br>
+        <input type="date" id="startDate" placeholder="Start Date"><br><br>
+
+        <label>hours</label><br>
         <input id="hour" placeholder="Hour"><br><br>
 
         <button type="submit">Calculate</button>
@@ -51,19 +83,31 @@
 <script>
     const API = "/api"; // IMPORTANT: same origin
 
+    const slider = document.getElementById("weather");
+    const label = document.getElementById("weatherCondition");
+
+    slider.addEventListener("input", () => {
+        console.log(slider.value)
+        label.textContent = Math.round(slider.value * 100) + "%";
+    });
+
     document.getElementById("calcForm").addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        const startDate = document.getElementById("startDate").value;
+
 
         const data = {
             calculationType: document.getElementById("calculationType").value,
             type: document.getElementById("type").value,
-            latitude: document.getElementById("latitude").value,
-            longitude: 0,
+            latitude: 47.40,
+            longitude: 8.5,
             panelTilt: document.getElementById("panelTilt").value,
             panelAzimuth: document.getElementById("panelAzimuth").value,
             panelArea: document.getElementById("panelArea").value,
-            dayOfYear: document.getElementById("dayOfYear").value,
-            hour: document.getElementById("hour").value
+            dayOfYear: getDayOfYear(startDate),
+            hour: document.getElementById("hour").value,
+            weather: parseFloat(slider.value)
         };
 
         const res = await fetch(`${API}/calculations`, {
@@ -90,7 +134,7 @@
         data.calculations.forEach(c => {
             const tr = document.createElement("tr");
 
-            const power = c.result?.power ?? c.result?.energy ?? c.result?.energyKWh ?? "-";
+            const power =  c.result?.energy ?? c.result?.energyWh ?? "-";
             const panelType = c.result?.panelType || "-";
 
 
@@ -104,6 +148,15 @@
 
             list.appendChild(tr);
         });
+    }
+
+    function getDayOfYear(dateString) {
+        if (!dateString) return null;
+
+        const date = new Date(dateString);
+        const start = new Date(date.getFullYear(), 0, 0);
+        const diff = date - start;
+        return Math.floor(diff / (1000 * 60 * 60 * 24));
     }
 
     loadCalculations();

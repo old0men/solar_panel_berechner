@@ -81,8 +81,11 @@ function validateBaseParams(body) {
         longitude: parseNumber(body.longitude, "longitude", errors, { min: -180, max: 180 }),
         panelTilt: parseNumber(body.panelTilt, "panelTilt", errors, { min: 0, max: 90 }),
         panelAzimuth: parseNumber(body.panelAzimuth, "panelAzimuth", errors, { min: -180, max: 360 }),
-        panelArea: parseNumber(body.panelArea, "panelArea", errors, { min: 0, required: false })
+        panelArea: parseNumber(body.panelArea, "panelArea", errors, { min: 0, required: false }),
+        weather: parseNumber(body.weather, "weather", errors, {min: 0, max: 1, required: false}) ?? 0
     };
+
+    console.log(params.weather)
 
     return { errors, params, panelType };
 }
@@ -113,6 +116,7 @@ function buildCalculation(mode, body) {
         ...params,
         panelEfficiency: panelType.defaultEfficiency
     };
+
     const input = {
         ...params,
         type: panelType.code,

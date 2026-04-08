@@ -81,7 +81,8 @@ class SolarPanelCalculator {
             panelTilt,
             panelAzimuth,
             panelEfficiency = this.panelEfficiency,
-            panelArea = this.panelArea
+            panelArea = this.panelArea,
+            weather
         } = params;
 
         const sunPos = this.calculateSunPosition(latitude, longitude, dayOfYear, hour);
@@ -105,16 +106,18 @@ class SolarPanelCalculator {
             sunPos.zenith,
             sunPos.azimuth
         );
+
         const airMassFactor = this.calculateAirMassEffect(sunPos.zenith);
-        const beamIrradiance = this.solarConstant * airMassFactor;
+        const weatherFactor = 1 - weather;
+        const beamIrradiance = this.solarConstant * airMassFactor * weatherFactor;
         const incidentPower = beamIrradiance * panelArea * cosTheta;
         const electricalPower = Math.round(incidentPower * panelEfficiency * 100) / 100;
 
+        console.log("Weather:", weather, "Factor:", weatherFactor);
 
         return {
             power: electricalPower,
             energy: electricalPower,
-            incidentPower,
             efficiency: panelEfficiency,
             details: {
                 sunElevation: sunPos.elevation,
@@ -122,6 +125,7 @@ class SolarPanelCalculator {
                 sunAzimuth: sunPos.azimuth,
                 incidenceAngle: Math.acos(cosTheta) * 180 / Math.PI,
                 incidenceAngleCosine: cosTheta,
+                weatherFactor,
                 airMassFactor,
                 beamIrradiance,
                 declination: this.calculateDeclination(dayOfYear)
