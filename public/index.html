@@ -137,13 +137,19 @@
             const tr = document.createElement("tr");
 
             const power =  c.result?.energy ?? c.result?.energyWh ?? "-";
+            let powerMeasurment
+            if (power === c.result?.energy) {
+                powerMeasurment = "KW"
+            } else {
+                powerMeasurment = "KWh"
+            }
             const panelType = c.result?.panelType || "-";
 
 
 
             tr.innerHTML = `
                             <td>${c.id}</td>
-                            <td style="text-align: right">${Math.round(power*100)/100} KW</td>
+                            <td style="text-align: right">${Math.round(power*100)/100} ${powerMeasurment}</td>
                             <td>${panelType}</td>
                             <td>${c.calculationType}</td>
                           `;
