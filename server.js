@@ -1,3 +1,4 @@
+// K.C.
 const crypto = require("crypto");
 const express = require("express");
 const cookieParser = require("cookie-parser");
@@ -296,7 +297,7 @@ app.use((error, req, res, next) => {
 
 function startServer(port = PORT) {
     return app.listen(port, () => {
-        console.log(`Solar API listening on http://localhost:${port}`);
+        console.log(`API listening on http://localhost:${port}`);
     });
 }
 

@@ -1,3 +1,4 @@
+// K.C.
 const PANEL_TYPES = {
     polycrystalline: {
         code: "polycrystalline",
