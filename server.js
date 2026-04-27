@@ -233,6 +233,16 @@ app.get("/api/users/me", (req, res) => {
     });
 });
 
+app.delete("/api/users/me", (req, res) => {
+    res.clearCookie(USER_COOKIE_NAME, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production"
+    });
+
+    res.status(204).send();
+});
+
 app.get("/api/panel-types", (req, res) => {
     res.json({
         panelTypes: listPanelTypes()
