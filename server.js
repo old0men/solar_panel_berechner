@@ -206,14 +206,13 @@ app.get("/", (req, res) => {
         name: "solar_panel_berechner API",
         database: dbPath,
         endpoints: {
-            me: "GET /api/users/me",
+            getCookie: "GET /api/users/me",
             deleteCookie: "DELETE /api/users/me",
             panelTypes: "GET /api/panel-types",
             createCalculation: "POST /api/calculations",
             listCalculations: "GET /api/calculations",
             getCalculation: "GET /api/calculations/:id",
             deleteCalculation: "DELETE /api/calculations/:id",
-            deleteMe: "DELETE /api/users/me",
             health: "GET /api/health"
         },
         supportedCalculationTypes: ["moment", "daily", "annual"],
