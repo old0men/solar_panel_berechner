@@ -212,6 +212,7 @@ app.get("/", (req, res) => {
             listCalculations: "GET /api/calculations",
             getCalculation: "GET /api/calculations/:id",
             deleteCalculation: "DELETE /api/calculations/:id",
+            deleteMe: "DELETE /api/users/me",
             health: "GET /api/health"
         },
         supportedCalculationTypes: ["moment", "daily", "annual"],
