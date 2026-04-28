@@ -1,173 +1,129 @@
+<!--VP-->
 
-<!-- V.P -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-        <title>Solar Calculator</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+        <title>SolarYield | Photovoltaik-Rechner mit Ertragsgraph</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 </head>
 <body>
-<h1>Solar Panel Calculator</h1>
+<div class="dashboard">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
 
-<form id="calcForm">
-        <h2>Calculation Type</h2>
-        <select id="calculationType">
-                <option value="moment">Moment</option>
-                <option value="daily">Daily</option>
-        </select><br><br>
+        </div>
 
-        <h2>Panel Type</h2>
-        <select id="type">
-                <option value="monocrystalline">Monocrystalline</option>
-                <option value="polycrystalline">Polycrystalline</option>
-                <option value="thinFilm">Thin Film</option>
-        </select><br><br>
+        <div class="card">
+                <div class="input-grid">
+                        <div class="field-group">
+                                <label>Berechnungstyp</label>
+                                <select id="calcType" style="color: black">
+                                        <option value="moment" style="color: black">Momentanleistung (ein Zeitpunkt)</option>
+                                        <option value="daily" selected>Tagesenergie (Tagesverlauf)</option>
+                                </select>
+                        </div>
+                        <div class="field-group">
+                                <label>Paneltyp</label>
+                                <select id="panelType" style="color: black">
+                                        <option value="monocrystalline">Monokristallin (≈20%)</option>
+                                        <option value="polycrystalline">Polykristallin (≈16.5%)</option>
+                                        <option value="thinFilm">Dünnschicht (≈11%)</option>
+                                </select>
+                        </div>
+                        <div class="field-group">
+                                <label>Breitengrad (Latitude)</label>
+                                <input type="number" id="latitude" value="50.0" step="1" min="-90" max="90">
+                        </div>
+                        <div class="field-group">
+                                <label>Längengrad (Longitude)</label>
+                                <input type="number" id="longitude" value="10.0" step="1" min="-180" max="180">
+                        </div>
+                        <div class="field-group">
+                                <label>Panelneigung (Tilt) °</label>
+                                <input type="number" id="panelTilt" value="35" min="0" max="90">
+                        </div>
+                        <div class="field-group">
+                                <label>Azimut (Panelausrichtung) °</label>
+                                <input type="number" id="panelAzimuth" value="180" min="-180" max="360">
+                        </div>
+                        <div class="field-group">
+                                <label>Modulfläche (m²)</label>
+                                <input type="number" id="panelArea" value="1.8" step="0.1" min="0.1">
+                        </div>
+                        <div class="field-group">
+                                <label>Wetterfaktor (0=klar, 1=voll bewölkt)</label>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                        <span style="font-size: 0.8rem;">Klar</span>
+                                        <input type="range" id="weather" value="0.2" step="0.01" min="0" max="0.9"
+                                               class="range-input"
+                                               oninput="document.getElementById('weatherValue').innerText = this.value">
 
-        <div style="border:1px solid #ccc; padding:15px; width:300px; border-radius:8px; justify-content: center">
-                <div style="text-align: center">
-                        <label>Weather Condition: </label>
-                        <span id="weatherCondition">0%</span><br><br>
+                                        <span style="font-size: 0.8rem;">Bewölkt</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                        <span style="font-size: 0.7rem; color: #666;">0.0</span>
+                                        <span id="weatherValue" style="font-weight: 600; color: #1f6e48;">0.20</span>
+                                        <span style="font-size: 0.7rem; color: #666;">0.9</span>
+                                </div>
+                        </div>
                 </div>
 
+                <div class="flex-row" style="margin-bottom: 10px;">
+                        <div style="display: flex; gap: 12px; flex: 2;">
+                                <div class="field-group" style="flex: 1;">
+                                        <label>Tag (1-31)</label>
+                                        <input type="number" id="dayInput" value="21" min="1" max="31" step="1">
+                                        <span class="inline-hint" style="font-size: 0.7rem;">1-31</span>
+                                </div>
+                                <div class="field-group" style="flex: 1;">
+                                        <label>Monat (1-12)</label>
+                                        <input type="number" id="monthInput" value="6" min="1" max="12" step="1">
+                                        <span class="inline-hint" style="font-size: 0.7rem;">1-12</span>
+                                </div>
+                        </div>
+                        <div class="field-group" style="flex:1; margin-bottom: 20px">
+                                <label>Für „Moment“: Stunde (0-23)</label>
+                                <input type="number" id="specificHour" value="12" min="0" max="23" step="1">
+                        </div>
+                </div>
 
-                <div style="display:flex; align-items:center; gap:10px;">
-                        <span style="font-size:12px;">Clear Sky</span>
-
-                        <input
-                                type="range"
-                                id="weather"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                value="0"
-                                style="flex:1;"
-                        >
-
-                        <span style="font-size:12px;">Completely Cloudy</span>
+                <div class="flex-row" style="justify-content: space-between; align-items: center;">
+                        <div class="field-group" style="flex:1">
+                                <label>Graph-Zeitspanne</label>
+                                <select id="graphGranularity">
+                                        <option value="hourly">Stundenverlauf (max 24h)</option>
+                                        <option value="daily">Tagesverlauf (max 30 Tage)</option>
+                                </select>
+                                <span class="inline-hint" style="color: white">this is filler text for spacing</span>
+                        </div>
+                        <div class="field-group" style="flex:1">
+                                <label>Anzahl Einheiten (Stunden/Tage)</label>
+                                <input type="number" id="rangeCount" value="12" min="1" max="48">
+                                <span class="inline-hint">max 24h oder 30 Tage (je nach Typ)</span>
+                        </div>
+                        <button id="computeBtn">ERTRAG BERECHNEN & GRAFIK</button>
                 </div>
         </div>
-        <br>
 
-        <!-- <input id="latitude" placeholder="Latitude" required><br><br>   -->
-        <!-- <input id="longitude" placeholder="longitude" required><br><br> -->
-        <label>panel tilt</label><br>
-        <input id="panelTilt" placeholder="Panel Tilt: (0-90)" required><br><br>
-        <label>panel cardinality</label><br>
-        <input id="panelAzimuth" placeholder="Panel Cardinality: (-180-360)" required><br><br>
-        <label>panel area</label><br>
-        <input id="panelArea" placeholder="Panel Area (m*m)"><br><br>
+        <!-- Ergebnis + Graph -->
+        <div class="graph-container" id="graphCard">
+                <div style="display: flex; justify-content: space-between;">
+                        <strong>Energieertrag (Wh)</strong>
+                        <span id="metaInfo" class="badge">Bereitschaft</span>
+                </div>
+                <canvas id="powerChart" width="800" height="350" style="max-height: 400px; width:100%"></canvas>
+                <div id="resultStats" class="result-stats">
+                        <div class="stat-card"><div class="stat-value" id="totalValue">—</div><div>Gesamtenergie (Wh)</div></div>
+                        <div class="stat-card"><div class="stat-value" id="peakValue">—</div><div>Max. Leistung (W)</div></div>
+                        <div class="stat-card"><div class="stat-value" id="panelEffUsed">—</div><div>Effizienz (gewählt)</div></div>
+                </div>
+                <div id="debugMsg" style="font-size: 0.8rem; text-align: center; margin-top: 12px; color: #3e6b55;"></div>
+        </div>
+</div>
 
-        <label>Start Date:</label><br>
-        <input type="date" id="startDate" placeholder="Start Date"><br><br>
-
-        <label>hours</label><br>
-        <input id="hour" placeholder="Hour: (0-24)"><br><br>
-
-        <button type="submit">Calculate</button>
-</form>
-
-<h2>Result</h2>
-<pre id="result"></pre>
-
-<h2>Saved</h2>
-<button onclick="loadCalculations()">Refresh</button>
-<table border="1">
-        <thead>
-        <tr>
-                <th>ID</th>
-                <th>Power</th>
-                <th>Panel Type</th>
-                <th>Calculation Type</th>
-        </tr>
-        </thead>
-        <tbody id="list"></tbody>
-</table>
-
-<script>
-    const API = "/api"; // IMPORTANT: same origin
-
-    const slider = document.getElementById("weather");
-    const label = document.getElementById("weatherCondition");
-
-    slider.addEventListener("input", () => {
-        console.log(slider.value)
-        label.textContent = Math.round(slider.value * 100) + "%";
-    });
-
-    document.getElementById("calcForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const startDate = document.getElementById("startDate").value;
-
-
-        const data = {
-            calculationType: document.getElementById("calculationType").value,
-            type: document.getElementById("type").value,
-            latitude: 47.40,
-            longitude: 8.5,
-            panelTilt: document.getElementById("panelTilt").value,
-            panelAzimuth: document.getElementById("panelAzimuth").value,
-            panelArea: document.getElementById("panelArea").value,
-            dayOfYear: getDayOfYear(startDate),
-            hour: document.getElementById("hour").value,
-            weather: parseFloat(slider.value)
-        };
-
-        const res = await fetch(`${API}/calculations`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "same-origin", // works automatically now
-            body: JSON.stringify(data)
-        });
-
-        const json = await res.json();
-        document.getElementById("result").textContent =
-            JSON.stringify(json, null, 2);
-
-        loadCalculations();
-    });
-
-    async function loadCalculations() {
-        const res = await fetch(`${API}/calculations`);
-        const data = await res.json();
-
-        const list = document.getElementById("list");
-        list.innerHTML = "";
-
-        data.calculations.forEach(c => {
-            const tr = document.createElement("tr");
-
-            const power =  c.result?.energy ?? c.result?.energyWh ?? "-";
-            let powerMeasurment
-            if (power === c.result?.energy) {
-                powerMeasurment = "KW"
-            } else {
-                powerMeasurment = "KWh"
-            }
-            const panelType = c.result?.panelType || "-";
-
-
-
-            tr.innerHTML = `
-                            <td>${c.id}</td>
-                            <td style="text-align: right">${Math.round(power*100)/100} ${powerMeasurment}</td>
-                            <td>${panelType}</td>
-                            <td>${c.calculationType}</td>
-                          `;
-
-            list.appendChild(tr);
-        });
-    }
-
-    function getDayOfYear(dateString) {
-        if (!dateString) return null;
-
-        const date = new Date(dateString);
-        const start = new Date(date.getFullYear(), 0, 0);
-        const diff = date - start;
-        return Math.floor(diff / (1000 * 60 * 60 * 24));
-    }
-
-    loadCalculations();
-</script>
+<script src="frontend.js"></script>
 </body>
 </html>
