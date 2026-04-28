@@ -53,9 +53,59 @@
                                 <label>Modulfläche (m²)</label>
                                 <input type="number" id="panelArea" value="1.8" step="0.1" min="0.1">
                         </div>
+                        <div class="field-group">
+                                <label>Wetterfaktor (0=klar, 1=voll bewölkt)</label>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                        <span style="font-size: 0.8rem;">Klar</span>
+                                        <input type="range" id="weather" value="0.2" step="0.01" min="0" max="0.9"
+                                               class="range-input"
+                                               oninput="document.getElementById('weatherValue').innerText = this.value">
 
+                                        <span style="font-size: 0.8rem;">Bewölkt</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                        <span style="font-size: 0.7rem; color: #666;">0.0</span>
+                                        <span id="weatherValue" style="font-weight: 600; color: #1f6e48;">0.20</span>
+                                        <span style="font-size: 0.7rem; color: #666;">0.9</span>
+                                </div>
+                        </div>
                 </div>
 
+                <div class="flex-row" style="margin-bottom: 10px;">
+                        <div style="display: flex; gap: 12px; flex: 2;">
+                                <div class="field-group" style="flex: 1;">
+                                        <label>Tag (1-31)</label>
+                                        <input type="number" id="dayInput" value="21" min="1" max="31" step="1">
+                                        <span class="inline-hint" style="font-size: 0.7rem;">1-31</span>
+                                </div>
+                                <div class="field-group" style="flex: 1;">
+                                        <label>Monat (1-12)</label>
+                                        <input type="number" id="monthInput" value="6" min="1" max="12" step="1">
+                                        <span class="inline-hint" style="font-size: 0.7rem;">1-12</span>
+                                </div>
+                        </div>
+                        <div class="field-group" style="flex:1; margin-bottom: 20px">
+                                <label>Für „Moment“: Stunde (0-23)</label>
+                                <input type="number" id="specificHour" value="12" min="0" max="23" step="1">
+                        </div>
+                </div>
+
+                <div class="flex-row" style="justify-content: space-between; align-items: center;">
+                        <div class="field-group" style="flex:1">
+                                <label>Graph-Zeitspanne</label>
+                                <select id="graphGranularity">
+                                        <option value="hourly">Stundenverlauf (max 24h)</option>
+                                        <option value="daily">Tagesverlauf (max 30 Tage)</option>
+                                </select>
+                                <span class="inline-hint" style="color: white">this is filler text for spacing</span>
+                        </div>
+                        <div class="field-group" style="flex:1">
+                                <label>Anzahl Einheiten (Stunden/Tage)</label>
+                                <input type="number" id="rangeCount" value="12" min="1" max="48">
+                                <span class="inline-hint">max 24h oder 30 Tage (je nach Typ)</span>
+                        </div>
+                        <button id="computeBtn">ERTRAG BERECHNEN & GRAFIK</button>
+                </div>
         </div>
 
         <!-- Ergebnis + Graph -->
