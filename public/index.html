@@ -18,11 +18,47 @@
 
         <div class="card">
                 <div class="input-grid">
+                        <div class="field-group">
+                                <label>Berechnungstyp</label>
+                                <select id="calcType" style="color: black">
+                                        <option value="moment" style="color: black">Momentanleistung (ein Zeitpunkt)</option>
+                                        <option value="daily" selected>Tagesenergie (Tagesverlauf)</option>
+                                </select>
+                        </div>
+                        <div class="field-group">
+                                <label>Paneltyp</label>
+                                <select id="panelType" style="color: black">
+                                        <option value="monocrystalline">Monokristallin (≈20%)</option>
+                                        <option value="polycrystalline">Polykristallin (≈16.5%)</option>
+                                        <option value="thinFilm">Dünnschicht (≈11%)</option>
+                                </select>
+                        </div>
+                        <div class="field-group">
+                                <label>Breitengrad (Latitude)</label>
+                                <input type="number" id="latitude" value="50.0" step="1" min="-90" max="90">
+                        </div>
+                        <div class="field-group">
+                                <label>Längengrad (Longitude)</label>
+                                <input type="number" id="longitude" value="10.0" step="1" min="-180" max="180">
+                        </div>
+                        <div class="field-group">
+                                <label>Panelneigung (Tilt) °</label>
+                                <input type="number" id="panelTilt" value="35" min="0" max="90">
+                        </div>
+                        <div class="field-group">
+                                <label>Azimut (Panelausrichtung) °</label>
+                                <input type="number" id="panelAzimuth" value="180" min="-180" max="360">
+                        </div>
+                        <div class="field-group">
+                                <label>Modulfläche (m²)</label>
+                                <input type="number" id="panelArea" value="1.8" step="0.1" min="0.1">
+                        </div>
 
                 </div>
 
         </div>
 
+        <!-- Ergebnis + Graph -->
         <div class="graph-container" id="graphCard">
                 <div style="display: flex; justify-content: space-between;">
                         <strong>Energieertrag (Wh)</strong>
