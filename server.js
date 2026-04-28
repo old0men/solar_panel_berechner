@@ -207,6 +207,7 @@ app.get("/", (req, res) => {
         database: dbPath,
         endpoints: {
             me: "GET /api/users/me",
+            deleteCookie: "DELETE /api/users/me",
             panelTypes: "GET /api/panel-types",
             createCalculation: "POST /api/calculations",
             listCalculations: "GET /api/calculations",
