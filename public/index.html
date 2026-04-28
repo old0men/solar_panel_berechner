@@ -23,9 +23,18 @@
 
         </div>
 
-        <!-- Ergebnis + Graph -->
         <div class="graph-container" id="graphCard">
-
+                <div style="display: flex; justify-content: space-between;">
+                        <strong>Energieertrag (Wh)</strong>
+                        <span id="metaInfo" class="badge">Bereitschaft</span>
+                </div>
+                <canvas id="powerChart" width="800" height="350" style="max-height: 400px; width:100%"></canvas>
+                <div id="resultStats" class="result-stats">
+                        <div class="stat-card"><div class="stat-value" id="totalValue">—</div><div>Gesamtenergie (Wh)</div></div>
+                        <div class="stat-card"><div class="stat-value" id="peakValue">—</div><div>Max. Leistung (W)</div></div>
+                        <div class="stat-card"><div class="stat-value" id="panelEffUsed">—</div><div>Effizienz (gewählt)</div></div>
+                </div>
+                <div id="debugMsg" style="font-size: 0.8rem; text-align: center; margin-top: 12px; color: #3e6b55;"></div>
         </div>
 </div>
 
