@@ -38,10 +38,6 @@
                                 <input type="number" id="latitude" value="50.0" step="1" min="-90" max="90">
                         </div>
                         <div class="field-group">
-                                <label>Längengrad (Longitude)</label>
-                                <input type="number" id="longitude" value="10.0" step="1" min="-180" max="180">
-                        </div>
-                        <div class="field-group">
                                 <label>Panelneigung (Tilt) °</label>
                                 <input type="number" id="panelTilt" value="35" min="0" max="90">
                         </div>
@@ -71,7 +67,7 @@
                         </div>
                 </div>
 
-                <div class="flex-row" style="margin-bottom: 10px;">
+                <div id="dayMonthContainer" class="flex-row" style="margin-bottom: 10px;">
                         <div style="display: flex; gap: 12px; flex: 2;">
                                 <div class="field-group" style="flex: 1;">
                                         <label>Tag (1-31)</label>
@@ -84,7 +80,10 @@
                                         <span class="inline-hint" style="font-size: 0.7rem;">1-12</span>
                                 </div>
                         </div>
-                        <div class="field-group" style="flex:1; margin-bottom: 20px">
+                </div>
+
+                <div id="hourContainer" class="flex-row" style="margin-bottom: 20px; display: none;">
+                        <div class="field-group" style="flex:1;">
                                 <label>Für „Moment“: Stunde (0-23)</label>
                                 <input type="number" id="specificHour" value="12" min="0" max="23" step="1">
                         </div>

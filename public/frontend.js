@@ -45,7 +45,7 @@ async function fetchMoment(params) {
         calculationType: "moment",
         type: params.type,
         latitude: params.latitude,
-        longitude: params.longitude,
+        longitude: 10.0,
         panelTilt: params.panelTilt,
         panelAzimuth: params.panelAzimuth,
         dayOfYear: params.dayOfYear,
@@ -64,7 +64,7 @@ async function fetchDailyEnergy(params) {
         calculationType: "daily",
         type: params.type,
         latitude: params.latitude,
-        longitude: params.longitude,
+        longitude: 10.0,
         panelTilt: params.panelTilt,
         panelAzimuth: params.panelAzimuth,
         dayOfYear: params.dayOfYear,
@@ -132,7 +132,7 @@ async function updateChart() {
     const calcType = document.getElementById('calcType').value;   // "moment" or "daily"
     const panelType = document.getElementById('panelType').value;
     const latitude = parseFloat(document.getElementById('latitude').value);
-    const longitude = parseFloat(document.getElementById('longitude').value);
+    const longitude = 10.0;
     const panelTilt = parseFloat(document.getElementById('panelTilt').value);
     const panelAzimuth = parseFloat(document.getElementById('panelAzimuth').value);
     let panelArea = parseFloat(document.getElementById('panelArea').value);
@@ -254,6 +254,31 @@ async function updateChart() {
         document.getElementById('totalValue').innerHTML = 'Fehler';
     }
 }
+
+const calcTypeSelect = document.getElementById('calcType');
+const dayMonthContainer = document.getElementById('dayMonthContainer');
+const hourContainer = document.getElementById('hourContainer');
+
+// Function to toggle visibility based on calculation type
+function toggleDateInputs() {
+    const calcType = calcTypeSelect.value;
+
+    if (calcType === 'daily') {
+        // Show day/month, hide hour
+        dayMonthContainer.style.display = 'flex';
+        hourContainer.style.display = 'none';
+    } else if (calcType === 'moment') {
+        // Show hour, hide day/month
+        dayMonthContainer.style.display = 'none';
+        hourContainer.style.display = 'flex';
+    }
+}
+
+// Add event listener to calculation type select
+calcTypeSelect.addEventListener('change', toggleDateInputs);
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', toggleDateInputs);
 
 // Initial setup and event binding
 document.getElementById('computeBtn').addEventListener('click', () => updateChart());
