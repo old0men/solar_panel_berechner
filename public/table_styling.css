@@ -1,0 +1,157 @@
+* {
+    box-sizing: border-box;
+    font-family: system-ui, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    background: linear-gradient(145deg, #e9f5f0 0%, #d4e9e2 100%);
+    margin: 0;
+    padding: 24px 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+h1 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #1d6f42, #0b4f2f);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    margin: 0;
+}
+
+button {
+    background: #1f6e48;
+    color: white;
+    border: none;
+    border-radius: 60px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+button:hover {
+    background: #0f5538;
+    transform: scale(0.98);
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(2px);
+    border-radius: 2rem;
+    box-shadow: 0 12px 28px rgba(0, 32, 16, 0.12);
+    padding: 1.6rem;
+    border: 1px solid rgba(72, 187, 120, 0.25);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th {
+    background: #1f6e48;
+    color: white;
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #cbdcd2;
+    color: #1a4c33;
+}
+
+tr:hover {
+    background: #eef6f1;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #1f6e48;
+    font-size: 1.1rem;
+}
+
+.error {
+    background: #fee2e2;
+    color: #c62828;
+    padding: 16px;
+    border-radius: 1rem;
+    text-align: center;
+}
+
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-style: italic;
+}
+
+.badge {
+    background: #cfe8de;
+    padding: 4px 10px;
+    border-radius: 40px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.stats-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    background: #eef6f1;
+    padding: 8px 16px;
+    border-radius: 60px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    th, td {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+}
+
+#deleteAccountBtn {
+    background: #c62828;
+    transition: all 0.2s;
+}
+
+#deleteAccountBtn:hover {
+    background: #b71c1c;
+    transform: scale(0.98);
+}
+
+#deleteAccountBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

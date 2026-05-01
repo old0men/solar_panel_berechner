@@ -43,6 +43,7 @@ async function callApi(calculationType, payloadBody) {
 async function fetchMoment(params) {
     const body = {
         calculationType: "moment",
+        trueCalcType: params.trueCalcType,
         type: params.type,
         latitude: params.latitude,
         longitude: 10.0,
@@ -50,6 +51,7 @@ async function fetchMoment(params) {
         panelAzimuth: params.panelAzimuth,
         dayOfYear: params.dayOfYear,
         hour: params.hour,
+        specificHour: params.specificHour,
         weather: params.weather,
         panelArea: params.panelArea
     };
@@ -62,12 +64,14 @@ async function fetchMoment(params) {
 async function fetchDailyEnergy(params) {
     const body = {
         calculationType: "daily",
+        trueCalcType: params.trueCalcType,
         type: params.type,
         latitude: params.latitude,
         longitude: 10.0,
         panelTilt: params.panelTilt,
         panelAzimuth: params.panelAzimuth,
         dayOfYear: params.dayOfYear,
+        specificHour: params.specificHour,
         weather: params.weather,
         panelArea: params.panelArea
     };
@@ -150,8 +154,10 @@ async function updateChart() {
     if (graphGranularity === 'daily' && rangeCount > 30) rangeCount = 30;
 
     const baseParams = {
+        trueCalcType: calcType,
         type: panelType,
         latitude, longitude, panelTilt, panelAzimuth, weather,
+        specificHour: specificHour,
         panelArea: panelArea
     };
 
@@ -292,6 +298,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (!dateInput.value) dateInput.value = `${yyyy}-06-21`; // summer default
     // Set example azimuth north?
     await updateChart();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const historyBtn = document.getElementById('historyBtn');
+    if (historyBtn) {
+        historyBtn.addEventListener('click', function() {
+            window.location.href = 'table.html';
+        });
+    }
 });
 
 // When calculation type changes, adjust specificHour visibility or rangeCount suggestions

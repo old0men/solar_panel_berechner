@@ -78,15 +78,18 @@ function validateBaseParams(body) {
     }
 
     const params = {
+        trueCalcType: body.trueCalcType,
         latitude: parseNumber(body.latitude, "latitude", errors, { min: -90, max: 90 }),
         longitude: parseNumber(body.longitude, "longitude", errors, { min: -180, max: 180 }),
         panelTilt: parseNumber(body.panelTilt, "panelTilt", errors, { min: 0, max: 90 }),
         panelAzimuth: parseNumber(body.panelAzimuth, "panelAzimuth", errors, { min: -180, max: 360 }),
         panelArea: parseNumber(body.panelArea, "panelArea", errors, { min: 0, required: false }),
+        specificHour: parseNumber(body.specificHour, "specificHour", errors, {min: 0, max: 96}),
         weather: parseNumber(body.weather, "weather", errors, {min: 0, max: 1, required: false}) ?? 0
     };
 
     console.log(params.weather)
+    console.log(params.specificHour)
 
     return { errors, params, panelType };
 }
