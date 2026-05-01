@@ -1,14 +1,12 @@
-<!--VP-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-        <link rel="stylesheet" type="text/css" href="stylesheet.css">
         <title>SolarYield | Photovoltaik-Rechner mit Ertragsgraph</title>
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+        <!-- Chart.js remains unchanged -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
 </head>
 <body>
 <div class="dashboard">
@@ -24,8 +22,8 @@
                         <div class="field-group">
                                 <label>Berechnungstyp</label>
                                 <select id="calcType" style="color: black">
-                                        <option value="moment" style="color: black">Momentanleistung (ein Zeitpunkt)</option>
                                         <option value="daily" selected>Tagesenergie (Tagesverlauf)</option>
+                                        <option value="moment" style="color: black">Momentanleistung (ein Zeitpunkt)</option>
                                 </select>
                         </div>
                         <div class="field-group">
@@ -59,7 +57,6 @@
                                         <input type="range" id="weather" value="0.2" step="0.01" min="0" max="0.9"
                                                class="range-input"
                                                oninput="document.getElementById('weatherValue').innerText = this.value">
-
                                         <span style="font-size: 0.8rem;">Bewölkt</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-top: 5px;">
@@ -110,7 +107,7 @@
                 </div>
         </div>
 
-        <!-- Ergebnis + Graph -->
+        <!-- Ergebnis + Graph (now appears on the left side via CSS grid) -->
         <div class="graph-container" id="graphCard">
                 <div style="display: flex; justify-content: space-between;">
                         <strong>Energieertrag (Wh)</strong>

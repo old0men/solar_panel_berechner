@@ -48,7 +48,7 @@ h1 {
 
 .input-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.2rem;
     margin-bottom: 1.8rem;
 }
@@ -184,4 +184,100 @@ hr {
 @media (max-width: 700px) {
     body { padding: 16px; }
     .stat-value { font-size: 1.3rem; }
+}
+/* ADDITIONAL STYLES – ONLY LAYOUT MODIFICATIONS, NO CLASS NAME CHANGES */
+/* This overrides the previous grid system to place graph on left, inputs on right.
+   Original classes remain untouched; we just change the dashboard container structure
+   and reposition elements using order and flex direction.
+   Since we cannot alter HTML structure, we use CSS Grid on the .dashboard parent
+   and reorder children: .card (inputs/controls) and .graph-container.
+   We also ensure the history button stays in correct position. */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;  /* left column: graph, right column: card */
+    gap: 1.8rem;
+    align-items: start;
+}
+
+/* The first child is the heading row (h1 + history button).
+   We need that to span full width across both columns */
+.dashboard > :first-child {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+/* The .card (all input fields and compute button) goes to the right column */
+.dashboard > .card {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    margin: 0;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+/* The graph-container moves to the left column */
+.dashboard > .graph-container {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    margin-top: 0;
+    background: #ffffffcc;
+    border-radius: 1.8rem;
+    padding: 1rem;
+}
+
+/* Ensure responsiveness: on smaller screens, revert to column layout */
+@media (max-width: 880px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    .dashboard > .card,
+    .dashboard > .graph-container {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        position: static;
+    }
+    .dashboard > :first-child {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Tweak spacing inside .card for consistency */
+.card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(2px);
+    border-radius: 2rem;
+    box-shadow: 0 12px 28px rgba(0, 32, 16, 0.12);
+    padding: 1.6rem;
+}
+
+/* Maintain graph canvas responsiveness */
+.graph-container canvas {
+    max-height: 400px;
+    width: 100%;
+}
+
+/* Adjust metaInfo refresh — no structural changes, only fine-tuning for readability */
+#metaInfo {
+    white-space: nowrap;
+}
+
+/* Ensure stats cards are visually balanced on left column */
+.result-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 20px;
+    justify-content: space-between;
+}
+
+/* Keep chart area comfortable */
+#powerChart {
+    max-height: 380px;
 }
