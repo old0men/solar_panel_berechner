@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <title>SolarYield | Berechnungshistorie</title>
+        <link rel="stylesheet" type="text/css" href="table_styling.css">
+
+</head>
+<body>
+<div class="container">
+        <div class="header">
+                <h1>Berechnungshistorie</h1>
+                <div style="display: flex; gap: 12px;">
+                        <button onclick="window.location.href='index.html'">← Zurück zum Rechner</button>
+                        <button id="deleteAccountBtn" style="background: #c62828; padding: 10px 24px;">
+                                Alle Rechnungen löschen
+                        </button>
+                </div>
+        </div>
+
+        <div class="card">
+                <div class="stats-bar" id="statsBar"></div>
+                <div class="table-wrapper">
+                        <table id="historyTable">
+                                <thead>
+                                <tr>
+                                        <th>Id</th>
+                                        <th>Berechnung  Typ</th>
+                                        <th>Panel</th>
+                                        <th>Totale Energie/Moment</th>
+                                        <th>Effizienz</th>
+                                        <th>Eingaben</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                <tr><td colspan="6" class="loading">Lade Daten...</td></tr>
+                                </tbody>
+                        </table>
+                </div>
+        </div>
+</div>
+
+<script src="table_frontend.js"></script>
+</body>
+</html>
