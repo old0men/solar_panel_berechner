@@ -45,7 +45,7 @@ async function fetchMoment(params) {
         calculationType: "moment",
         trueCalcType: params.trueCalcType,
         type: params.type,
-        latitude: params.latitude,
+        latitude: 50.0,
         longitude: 10.0,
         panelTilt: params.panelTilt,
         panelAzimuth: params.panelAzimuth,
@@ -66,7 +66,7 @@ async function fetchDailyEnergy(params) {
         calculationType: "daily",
         trueCalcType: params.trueCalcType,
         type: params.type,
-        latitude: params.latitude,
+        latitude: 50.0,
         longitude: 10.0,
         panelTilt: params.panelTilt,
         panelAzimuth: params.panelAzimuth,
@@ -135,7 +135,7 @@ let chartInstance = null;
 async function updateChart() {
     const calcType = document.getElementById('calcType').value;   // "moment" or "daily"
     const panelType = document.getElementById('panelType').value;
-    const latitude = parseFloat(document.getElementById('latitude').value);
+    const latitude = 50.0;
     const longitude = 10.0;
     const panelTilt = parseFloat(document.getElementById('panelTilt').value);
     const panelAzimuth = parseFloat(document.getElementById('panelAzimuth').value);
@@ -171,6 +171,7 @@ async function updateChart() {
         let seriesData = [];
         let totalEnergyWh = 0;
         let maxPowerW = 0;
+        let panelEffDisplay = 0;
 
         if (graphGranularity === 'hourly') {
             // hourly graph computes watts for each hour
@@ -186,6 +187,8 @@ async function updateChart() {
             seriesData = hourlyResult.map(point => ({ label: point.label, value: point.power, rawWh: point.power }));
             // calculates the total amount of energy produced within the range
             totalEnergyWh = seriesData.reduce((sum, item) => sum + (item.rawWh > 0 ? item.rawWh : 0), 0);
+            // calculates the average amount of energy produced within the range
+            panelEffDisplay = totalEnergyWh/rangeCount
             // takes the biggest number in the spread of seriesData.value
             maxPowerW = Math.max(...seriesData.map(i => i.value), 0);
             metaSpan.innerText = `Stundenauflösung · ${rangeCount} Stunden`;
@@ -194,23 +197,17 @@ async function updateChart() {
             const dailySeries = await computeDailySeries(baseParams, dayOfYear, rangeCount);
             seriesData = dailySeries.map(d => ({ label: d.label, value: d.energyWh }));
             totalEnergyWh = seriesData.reduce((sum, item) => sum + (item.value > 0 ? item.value : 0), 0);
+            panelEffDisplay = totalEnergyWh/rangeCount
+            console.log(`avg: ${panelEffDisplay}`)
             maxPowerW = Math.max(...seriesData.map(i => i.value), 0);
             metaSpan.innerText = `Tagesertrag · ${rangeCount} Tage`;
         }
 
-        let panelEffDisplay = '—';
-        try {
-            const temporaryParams = { ...baseParams, dayOfYear, hour: 12 };
-            const temporaryFetch = await fetchMoment(temporaryParams);
-            panelEffDisplay = temporaryFetch.panelEfficiencyUsed
-                ? (temporaryFetch.panelEfficiencyUsed * 100).toFixed(1) + '%'
-                : (baseParams.type==='monocrystalline'? '20%' : baseParams.type==='polycrystalline' ? '16.5%' : '11%')
-        } catch(e) { panelEffDisplay = 'no panel'; }
 
         // Update statistics
         document.getElementById('totalValue').innerHTML = Math.round(totalEnergyWh) + ' W';
         document.getElementById('peakValue').innerHTML = Math.round(maxPowerW) + (graphGranularity==='hourly'?' W':' W/Tag');
-        document.getElementById('panelEffUsed').innerHTML = panelEffDisplay;
+        document.getElementById('panelEffUsed').innerHTML = Math.round(panelEffDisplay) + (graphGranularity==='hourly'?' W':' W/Tag');
 
         const labels = seriesData.map(series => series.label);
         const values = seriesData.map(series => series.value);
@@ -262,7 +259,7 @@ async function updateChart() {
 }
 
 const calcTypeSelect = document.getElementById('calcType');
-const dayMonthContainer = document.getElementById('dayMonthContainer');
+const granularityContainer = document.getElementById('granularityContainer');
 const hourContainer = document.getElementById('hourContainer');
 
 // Function to toggle visibility based on calculation type
@@ -271,11 +268,11 @@ function toggleDateInputs() {
 
     if (calcType === 'daily') {
         // Show day/month, hide hour
-        dayMonthContainer.style.display = 'flex';
+        granularityContainer.style.display = 'flex';
         hourContainer.style.display = 'none';
     } else if (calcType === 'moment') {
         // Show hour, hide day/month
-        dayMonthContainer.style.display = 'none';
+        granularityContainer.style.display = 'none';
         hourContainer.style.display = 'flex';
     }
 }

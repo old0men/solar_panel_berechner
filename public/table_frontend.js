@@ -56,14 +56,20 @@ async function showDailyEnergyEntries() {
                 groupId = calc.id
             }
 
-            const check = calc.id - calc.input?.hour
-            if (groupId > check) {
-                groupId = calc.id - calc.input?.specificHour
+            if (calc.input?.hour !== undefined) {
+                const check = calc.id - calc.input?.hour
+                if (groupId > check) {
+                    groupId = calc.id - calc.input?.hour
+                }
+            } else {
+                const check = calc.id - calc.input?.dayOfYear
+                if (groupId > check) {
+                    groupId = calc.id - calc.input?.dayOfYear
+                }
             }
 
-            const energyWh = calc.result?.energyWh;
-            const energy = calc.result?.energy;
-            const power = calc.result?.power;
+
+            const power = calc.result?.power !== undefined ? calc.result.power : calc.result.energyWh;
             const hour = calc.input?.hour;
             const specificHour = calc.input?.specificHour;
             const date = new Date(calc.createdAt);
@@ -79,12 +85,14 @@ async function showDailyEnergyEntries() {
                 dailyGroup.set(groupId, {
                     id: calc.id,
                     power: [],
+                    days: 0,
                     input: {...calc.input}
                 })
             }
 
             const group = dailyGroup.get(groupId);
             group.power.push(power);
+            group.days += 1
 
         });
 
@@ -104,7 +112,7 @@ async function showDailyEnergyEntries() {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
-
+                console.log(`${hour} === ${specificHour}`)
                 if (hour === specificHour) {
                     if (!momentGroup.has(calc.id)) {
                         momentGroup.set(calc.id, {
@@ -116,8 +124,6 @@ async function showDailyEnergyEntries() {
 
                     const group = momentGroup.get(calc.id);
                     group.power.push(power);
-
-                    counter += calc.specificHour
                 }
             } else {
                 counter -= 1
@@ -130,7 +136,7 @@ async function showDailyEnergyEntries() {
         const displayCalculations = [...displayCalculationsDaily, ...displayCalculationsMoment];
         console.log(displayCalculations)
 
-        displayCalculations.sort((a, b) => a.id - b.id);
+        displayCalculations.sort((a, b) => b.id - a.id);
 
         tableBody.innerHTML = '';
 
@@ -138,15 +144,71 @@ async function showDailyEnergyEntries() {
 
             const row = tableBody.insertRow();
 
-            let id = group.id
+            let actualIndex = displayCalculations.length-index;
+
             let power = group.power
             let calcType = group.input?.trueCalcType
             let type = group.input?.type
 
-            row.insertCell(0).textContent = (index + 1).toString();
-            row.insertCell(1).innerHTML = calcType
-            row.insertCell(2).innerHTML = `<span class="badge">${type}</span>`;
-            row.insertCell(3).textContent = ((power.reduce((sum, item) => sum +item)).toFixed(2)).toString();
+            // Calculate average power (fixing the "hello" placeholder)
+            let avgPower = (power.reduce((sum, item) => sum + item, 0) / power.length).toFixed(2);
+
+            // Format inputs as readable string
+            let inputs = [];
+            if (group.input?.hour !== undefined) {
+                inputs.push(`Stunden: ${group.input.hour + 1}`)
+            } else if (group.input?.dayOfYear !== undefined){
+                inputs.push(`Tage: ${group.days}`)
+            }
+            if (group.input?.specificHour !== undefined) {
+                inputs.push(`Spez. Stunde: ${group.input.specificHour}`)
+            } else {
+                inputs.push(`Spez. Stunde: undefined`)
+            }
+            if (group.input?.panelArea) {
+                inputs.push(`Fläche: ${group.input.panelArea}`)
+            } else {
+                inputs.push(`Fläche: undefined`)
+            }
+            if (group.input?.panelTilt) {
+                inputs.push(`Neigung: ${group.input.panelTilt}°`)
+            } else {
+                inputs.push(`Neigung: undefined`)
+            }
+            if (group.input?.panelAzimuth) {
+                inputs.push(`Azimut: ${group.input.panelAzimuth}°`)
+            } else {
+                inputs.push(`Azimut: undefined`)
+            }
+
+            const inputsTextDaily = `<Section style="grid-column: 2 / 2">
+                                                            <span>${inputs[0]}; </span>
+                                                            <span>${inputs[2]}; </span>
+                                                            <span>${inputs[3]}; </span>
+                                                            <span>${inputs[4]}</span>
+                                                        </Section>` || '-';
+
+            const inputsTextMoment = `<Section style="grid-column: 2 / 2">
+                                                            <span>${inputs[1]}; </span> 
+                                                            <span>${inputs[2]}; </span>
+                                                            <span>${inputs[3]}; </span>
+                                                            <span>${inputs[4]}</span>
+                                                        </Section>` || '-';
+
+            let inputsText = '-'
+            if (calcType === 'daily') {
+                inputsText = inputsTextDaily;
+            } else if (calcType === 'moment') {
+                inputsText = inputsTextMoment
+            }
+
+            row.insertCell(0).textContent = (actualIndex).toString();
+            row.insertCell(1).textContent = calcType === 'daily' ? 'Tagesertrag' : (calcType === 'moment' ? 'Momentanleistung' : calcType);
+            row.insertCell(2).innerHTML = `<span class="badge">${type || 'Standard'}</span>`;
+            row.insertCell(3).textContent = `${(power.reduce((sum, item) => sum + item, 0)).toFixed(2)} Wh`;
+            row.insertCell(4).textContent = `${avgPower} W${group.input?.hour !== undefined ? '/h' : '/t'}`;
+            row.insertCell(5).innerHTML = `<span>${inputsText}</span>` ;
+
         })
 
 
@@ -175,13 +237,6 @@ async function deleteUserAccount() {
     );
 
     if (!userConfirmed) return;
-
-    const secondConfirm = confirm(
-        'Letzte Warnung: Ihr Konto und ALLE damit verbundenen Daten werden PERMANENT gelöscht.\n\n' +
-        'Sind Sie ABSOLUT sicher?'
-    );
-
-    if (!secondConfirm) return;
 
     const deleteBtn = document.getElementById('deleteAccountBtn');
     const originalText = deleteBtn.innerHTML;

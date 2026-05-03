@@ -35,10 +35,6 @@
                                 </select>
                         </div>
                         <div class="field-group">
-                                <label>Breitengrad (Latitude)</label>
-                                <input type="number" id="latitude" value="50.0" step="1" min="-90" max="90">
-                        </div>
-                        <div class="field-group">
                                 <label>Panelneigung (Tilt) °</label>
                                 <input type="number" id="panelTilt" value="35" min="0" max="90">
                         </div>
@@ -54,15 +50,15 @@
                                 <label>Wetterfaktor (0=klar, 1=voll bewölkt)</label>
                                 <div style="display: flex; gap: 12px; align-items: center;">
                                         <span style="font-size: 0.8rem;">Klar</span>
-                                        <input type="range" id="weather" value="0.2" step="0.01" min="0" max="0.9"
+                                        <input type="range" id="weather" value="0.2" step="0.01" min="0" max="0.85"
                                                class="range-input"
                                                oninput="document.getElementById('weatherValue').innerText = this.value">
                                         <span style="font-size: 0.8rem;">Bewölkt</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                                        <span style="font-size: 0.7rem; color: #666;">0.0</span>
+                                        <span style="font-size: 0.7rem; color: #666;">0%</span>
                                         <span id="weatherValue" style="font-weight: 600; color: #1f6e48;">0.20</span>
-                                        <span style="font-size: 0.7rem; color: #666;">0.9</span>
+                                        <span style="font-size: 0.7rem; color: #666;">85%</span>
                                 </div>
                         </div>
                 </div>
@@ -89,7 +85,7 @@
                         </div>
                 </div>
 
-                <div class="flex-row" style="justify-content: space-between; align-items: center;">
+                <div id="granularityContainer" class="flex-row" style="justify-content: space-between; align-items: center;">
                         <div class="field-group" style="flex:1">
                                 <label>Graph-Zeitspanne</label>
                                 <select id="graphGranularity">
@@ -103,8 +99,8 @@
                                 <input type="number" id="rangeCount" value="12" min="1" max="48">
                                 <span class="inline-hint">max 24h oder 30 Tage (je nach Typ)</span>
                         </div>
-                        <button id="computeBtn">ERTRAG BERECHNEN & GRAFIK</button>
                 </div>
+                <button id="computeBtn">ERTRAG BERECHNEN & GRAFIK</button>
         </div>
 
         <!-- Ergebnis + Graph (now appears on the left side via CSS grid) -->
@@ -117,7 +113,7 @@
                 <div id="resultStats" class="result-stats">
                         <div class="stat-card"><div class="stat-value" id="totalValue">—</div><div>Gesamtenergie (Wh)</div></div>
                         <div class="stat-card"><div class="stat-value" id="peakValue">—</div><div>Max. Leistung (W)</div></div>
-                        <div class="stat-card"><div class="stat-value" id="panelEffUsed">—</div><div>Effizienz (gewählt)</div></div>
+                        <div class="stat-card"><div class="stat-value" id="panelEffUsed">—</div><div>Durschnit. Leistung (Wh)</div></div>
                 </div>
                 <div id="debugMsg" style="font-size: 0.8rem; text-align: center; margin-top: 12px; color: #3e6b55;"></div>
         </div>

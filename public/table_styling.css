@@ -68,6 +68,8 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
+    border-radius: 1rem;
+    overflow: hidden;
 }
 
 th {
@@ -78,10 +80,22 @@ th {
     font-weight: 600;
 }
 
+th:first-child {
+    border-top-left-radius: 1rem;
+}
+
+th:last-child {
+    border-top-right-radius: 1rem;
+}
+
 td {
     padding: 12px;
     border-bottom: 1px solid #cbdcd2;
     color: #1a4c33;
+}
+
+tr {
+    justify-content: space-around;
 }
 
 tr:hover {
